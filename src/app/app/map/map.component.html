@@ -1,7 +1,11 @@
 <p>map works!</p>
 
+<mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
 
-@defer(when user.name === 'Angular') {
+<p>Center: {{center}}</p>
+
+
+@defer(when this.center.lat !== 0) {
 
   <google-map
     id="map"
@@ -9,28 +13,33 @@
     height="400px"
     [mapId]="'map-id'"
     [center]="center"
-    [options]="options"
-    (mapClick)="moveMap($event)"
-    (mapMousemove)="move($event)"
-  >
-    <map-advanced-marker
-      [position]="center"
-      [content]="testPin.element"
-    >
-    </map-advanced-marker>
+    [options]="options">
+    @for (m of properties; track m.title) {
+      <map-advanced-marker
+        #marker="mapAdvancedMarker"
+        [position]="m.posicion"
+        (mapClick)="openInfoWindow(marker, infoWindow)" >
+      </map-advanced-marker>
+      <map-info-window
+        #infoWindow="mapInfoWindow"
+        >
+        <h3>{{m.title}}</h3>
+        <div>{{m.descripcion}}</div>
+      </map-info-window>
+    }
   </google-map>
 
-}@placeholder {
+} @placeholder {
 
   <div>displayed until user.name is not equal to Angular</div>
 
-}@loading(after: 100ms; minimum 1s) {
+} @loading(after 100ms; minimum 1s) {
 
-  <app-loader />
+  <mat-spinner></mat-spinner>
 
-}@error {
+} @error {
 
-  <app-error />
+  <div>ERROR</div>
 
 }
 
